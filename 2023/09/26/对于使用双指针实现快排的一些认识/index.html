@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="我的第一篇博客文章, Hexo">
+    <meta name="keywords" content="对于使用双指针实现快排的一些认识, Hexo">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>我的第一篇博客文章 | Hexo</title>
+    <title>对于使用双指针实现快排的一些认识 | Hexo</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -310,12 +310,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/17.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/1.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">我的第一篇博客文章</h1>
+                    <h1 class="description center-align post-title">对于使用双指针实现快排的一些认识</h1>
                 </div>
             </div>
         </div>
@@ -443,7 +443,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>Publish Date:&nbsp;&nbsp;
-                    2023-09-23
+                    2023-09-26
                 </div>
                 
 
@@ -464,7 +464,9 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <p>Hello,亲爱的小伙伴们大家好，我是Arbor,这是我撰写的第一篇blog,以后会在我的个人博客网站上发布本人日常学习中碰到的技术难题和好玩的技术，希望大家能够喜欢！<br>这里是测试</p>
+                <pre><code>首先，我们对于快速排序要有一个基本的认识,快速排序实际上是基于冒牌排序的优化，但是对于冒泡排序的O(n^2)的时间复杂度，快速排序可以达到O(nlogn)的时间复杂度，
+</code></pre>
+<p>可以说，对于一个十分巨大的数据集来说，快速排序的优势，无疑是巨大的。<br>    那么，计算机界的前辈们是怎么通过冒泡排序来想到快速排序的呢?以下是笔者的一些浅薄认知，如有错误，欢迎指出，首先我们对于一个正常使用冒泡排序的数组，我们都是从末尾开始进行冒泡排序<br>而被指针指向的那个数在经历过一遍排序过后，它的前一个数和后一个数会呈现怎么样的特点呢？如果这个冒泡排序的目的是产生一个递增数组的话，那么当前指向的这个数在经历过一遍<br>循环之后，它的前一个数一定小于它，而它的后一个数一定大于它，这是非常好理解的。也是基于这一点，我们想，如果我们在一个正常数组中随机挑选一个数，然后让比它小的数都在<br>它的左边，而比它大的数，自然就在它的右边。然后我们对这个数的左边和右边两个数组分别再进行这样一次处理，那么我们最终对于数组中的每一个数，都会有和第一个数相同的特点<br>而这，不就是一个有序数组吗？！<br>    以上仅是笔者根据自己的认知用自然语言来描述的快速排序的思路，但是再计算机科学中，我们其实是使用了分治加双指针的思路来实现的（当然也有其他的实现方式，不过笔者认为<br>这种方式写出来更加简洁）<br>    以下给出C++的双指针+递归实现快速排序:<br>    #include<iostream><br>    using namespace std;<br>    const int N &#x3D; 1e6 + 10;<br>    int n ;<br>    int p[N];<br>    void quick_sort(int p[] , int l , int r){<br>        if(l &gt;&#x3D; r) return;<br>        int i &#x3D; l - 1;<br>        int j &#x3D; r + 1;<br>        int x &#x3D; p[l];<br>        while(i &lt; j){<br>            do i++; while(p[i] &lt; x);<br>            do j–; while(p[j] &gt; x);<br>            if(i &lt; j) swap(p[i] , p[j]);<br>        }<br>        quick_sort(p , l , j);<br>        quick_sort(p , j + 1 , r);<br>    }<br>    int main(){<br>        scanf(“%d” , &amp;n);<br>        for(int i &#x3D; 0 ; i &lt; n ; i++){<br>            scanf(“%d” , &amp;p[i]);<br>        }<br>        quick_sort(p , 0 , n - 1)；<br>        for(int i &#x3D; 0 ; i &lt; n ; i++){<br>            printf(“%d” , p[i]);<br>        }<br>        return 0;<br>    }<br>    这已经是笔者遍查各种blog能找出的最简实现了，还忘海涵。<br>    下面我们来谈谈其中的特殊点:<br>    总共有两处:<br>    1.当关键字选取的是最左边的数字的时候，我们下方的quick_sort()中的分界点只能是j,另外一个则是j + 1,<br>其实这个我们用一个特例即可说明，就是数组: 1 , 2<br>    刚开始时，数组的i指针指向0 , j指针指向1,但是由于我们取的是左边，最后i和j会重合在左边界，但是在下一次递归中<br>如果我们使用i 和 i - 1的组合的话，那么则会分成两个新的边界即(0 , -1) 和 (0 , 1)，且不谈第一个区间的合理性，第二个<br>区间就是我们的原区间，这样是会造成死循环的！<br>    事实上这是因为因为我们选取左边界，而左边界上的数在第一次循环的时候是不会移动的，所以当任何已经排序好的数组，使用错误情况时<br>i和j都会重合到下标为0的位置上，从而产生一个和原来一样的数组，引起死循环。<br>    2.当笔者自己学习的时候曾问自己这么一个问题，就是我们实现了一个数组中从某个下标开始左边全小于和右边全大于的情况，但是这个被选中的数<br>本身却没有去到它该去的位置上，难道不会产生死循环的问题吗，但是单纯的抽象并不好理解，但是只要调试一组实际数就会发现，最后还是会被排好序<br>这是因为，在数字没有去往它应该去的位置时，再下一次再次选中这个数的时候会再次引起更小范围的部分排序，直到我们对于每一个数都如此处理为止，<br>那么也说明了一个问题：真正认识一种算法的有效方法就是带入实际数据后自己调试一遍，然后每一步都要关注他们的具体作用，它们又是怎么处理难处理的<br>问题的呢，然后在学习之后再手敲一遍。<br>事实上，快速排序的实现方法不止用双指针一种，而且双指针的写法也不止这一种，大家只需选择自己写的得心应手的即可，其实像填坑法和双指针中交换关键字的<br>方法背后的实现原理也十分精彩，鼓励大家也可以去了解背后的实现原理。</p>
 
                 
             </div>
@@ -491,7 +493,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://example.com/2023/09/23/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87%E5%8D%9A%E5%AE%A2%E6%96%87%E7%AB%A0/">http://example.com/2023/09/23/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87%E5%8D%9A%E5%AE%A2%E6%96%87%E7%AB%A0/</a>
+                    <a href="http://example.com/2023/09/26/%E5%AF%B9%E4%BA%8E%E4%BD%BF%E7%94%A8%E5%8F%8C%E6%8C%87%E9%92%88%E5%AE%9E%E7%8E%B0%E5%BF%AB%E6%8E%92%E7%9A%84%E4%B8%80%E4%BA%9B%E8%AE%A4%E8%AF%86/">http://example.com/2023/09/26/%E5%AF%B9%E4%BA%8E%E4%BD%BF%E7%94%A8%E5%8F%8C%E6%8C%87%E9%92%88%E5%AE%9E%E7%8E%B0%E5%BF%AB%E6%8E%92%E7%9A%84%E4%B8%80%E4%BA%9B%E8%AE%A4%E8%AF%86/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -698,54 +700,18 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;Previous</div>
+                <i class="far fa-dot-circle"></i>&nbsp;Current
+            </div>
             <div class="card">
-                <a href="/2023/09/24/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87blog/">
+                <a href="/2023/09/26/%E5%AF%B9%E4%BA%8E%E4%BD%BF%E7%94%A8%E5%8F%8C%E6%8C%87%E9%92%88%E5%AE%9E%E7%8E%B0%E5%BF%AB%E6%8E%92%E7%9A%84%E4%B8%80%E4%BA%9B%E8%AE%A4%E8%AF%86/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/2.jpg" class="responsive-img" alt="我的第一篇blog">
+                        <img src="/medias/featureimages/1.jpg" class="responsive-img" alt="对于使用双指针实现快排的一些认识">
                         
-                        <span class="card-title">我的第一篇blog</span>
-                    </div>
-                </a>
-                <div class="card-content article-content">
-                    <div class="summary block-with-text">
-                        
-                            
-                        
-                    </div>
-                    <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2023-09-24
-                        </span>
-                        <span class="publish-author">
-                            
-                            <i class="fas fa-user fa-fw"></i>
-                            John Doe
-                            
-                        </span>
-                    </div>
-                </div>
-                
-            </div>
-        </div>
-        
-        
-        <div class="article col s12 m6" data-aos="fade-up">
-            <div class="article-badge right-badge text-color">
-                Current&nbsp;<i class="far fa-dot-circle"></i>
-            </div>
-            <div class="card">
-                <a href="/2023/09/23/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87%E5%8D%9A%E5%AE%A2%E6%96%87%E7%AB%A0/">
-                    <div class="card-image">
-                        
-                        
-                        <img src="/medias/featureimages/17.jpg" class="responsive-img" alt="我的第一篇博客文章">
-                        
-                        <span class="card-title">我的第一篇博客文章</span>
+                        <span class="card-title">对于使用双指针实现快排的一些认识</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -756,7 +722,7 @@
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2023-09-23
+                                <i class="far fa-clock fa-fw icon-date"></i>2023-09-26
                             </span>
                         <span class="publish-author">
                             
@@ -767,6 +733,43 @@
                     </div>
                 </div>
 
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                Next&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2023/09/24/%E8%AE%B0%E5%BD%95%E4%BB%8A%E5%A4%A9%E4%BD%BF%E7%94%A8hexo%E8%BF%9B%E8%A1%8C%E5%8D%9A%E5%AE%A2%E7%BC%96%E5%86%99%E9%81%87%E5%88%B0%E7%9A%84%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/19.jpg" class="responsive-img" alt="记录今天使用hexo进行博客编写遇到的一些问题">
+                        
+                        <span class="card-title">记录今天使用hexo进行博客编写遇到的一些问题</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2023-09-24
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            John Doe
+                            
+                        </span>
+                    </div>
+                </div>
                 
             </div>
         </div>
