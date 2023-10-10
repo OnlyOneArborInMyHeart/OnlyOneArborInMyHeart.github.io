@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="我的第一篇blog, Hexo">
+    <meta name="keywords" content="在JAVA中将全局变量的作用域被局部变量覆盖导致的灯下黑事件, Hexo">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>我的第一篇blog | Hexo</title>
+    <title>在JAVA中将全局变量的作用域被局部变量覆盖导致的灯下黑事件 | Hexo</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -310,12 +310,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/2.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/3.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">我的第一篇blog</h1>
+                    <h1 class="description center-align post-title">在JAVA中将全局变量的作用域被局部变量覆盖导致的灯下黑事件</h1>
                 </div>
             </div>
         </div>
@@ -443,28 +443,28 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>Publish Date:&nbsp;&nbsp;
-                    2023-09-24
+                    2023-10-10
                 </div>
                 
 
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-check fa-fw"></i>Update Date:&nbsp;&nbsp;
-                    2023-09-24
+                    2023-10-10
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>Word Count:&nbsp;&nbsp;
-                    0
+                    682
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>Read Times:&nbsp;&nbsp;
-                    1 Min
+                    2 Min
                 </div>
                 
 
@@ -484,7 +484,31 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                
+                <pre><code>首先我们先来看一段代码：
+class Solution &#123;
+int max = 0;
+int count = 0;
+public int calculateDepth(TreeNode root)&#123;
+    selectmax(root , count);
+    return max;
+&#125;
+public void selectmax(TreeNode root , int count)&#123;
+    
+    if(root != null)&#123;
+        count += 1;
+        if(count &gt; max)&#123;
+            max = count;
+        &#125;
+        selectmax(root.left , count);
+        selectmax(root.right , count);
+    &#125;else&#123;
+        return ;
+    &#125;
+&#125;
+&#125;
+</code></pre>
+<p>代码来自leetcode中LCR 175.计算二叉树深度某位大佬题解下的评论区<br>乍一眼看到这段代码，我们都会觉得很正常，就是将count变量分左右统计左子树和右子树的最大深度，然后加上自己这个结点的深度，返回到上一层调用它的函数中去，<br>如果这个变量count是作为局部变量在selectmax中不断的传递的，那么这样的分别统计当然是对的，但是请注意，答主这里将count变量的初始化放在了Solution类的头部<br>这导致count变量被声名为全局变量，那么在这之后的count都是一个count,也就是说count不会分别统计左右子树的深度，而是把所有结点做了一个遍历并统计，最后返回的<br>是这颗树的所有结点总数<br>但是，有趣的地方来了：<br>当你认定这个解法完全不可能行得通的时候我们将它放在leetcode里检测，结果居然返回的是正确的值<br>所以我们有两种怀疑：<br>1.leetcode对这一题的测试集太单一，单一到甚至从根节点开始就只有一颗左子树，退化为线性结构，但是你将max改为max + 1 过后发现不仅仅是大于1这么简单，所以leetcode<br>设置的树的结构是没问题的，这种猜想不成立<br>2.这里的count全局变量在某种程度上变成了count局部变量，<br>我们将count的声名放在main函数中，发现依然通过测试，说明count作为”全局变量”和局部变量所起的作用一样，<br>之所以在全局变量前加双引号，是因为这种全局变量根本就是伪全局变量，因为在selectmax()的函数声名中使用了与count同名的局部变量，造成了全局变量作用域被局部变量覆盖<br>，这里的全局变量本身就是一个骗局！<br>所以我建议大家平时在使用全局变量的时候不要将他作为一个参数乱传了，因为本身全局变量的作用域就是全部函数，不传也能用，不要和评论里这位老哥一样搞不拎请全局和局部的差别<br>但是只要通过了测试就洋洋得意哦~~~</p>
+
                 
             </div>
             <hr/>
@@ -510,7 +534,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://example.com/2023/09/24/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87blog/">http://example.com/2023/09/24/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87blog/</a>
+                    <a href="http://example.com/2023/10/10/%E5%9C%A8JAVA%E4%B8%AD%E5%B0%86%E5%85%A8%E5%B1%80%E5%8F%98%E9%87%8F%E7%9A%84%E4%BD%9C%E7%94%A8%E5%9F%9F%E8%A2%AB%E5%B1%80%E9%83%A8%E5%8F%98%E9%87%8F%E8%A6%86%E7%9B%96%E5%AF%BC%E8%87%B4%E7%9A%84%E7%81%AF%E4%B8%8B%E9%BB%91%E4%BA%8B%E4%BB%B6/">http://example.com/2023/10/10/%E5%9C%A8JAVA%E4%B8%AD%E5%B0%86%E5%85%A8%E5%B1%80%E5%8F%98%E9%87%8F%E7%9A%84%E4%BD%9C%E7%94%A8%E5%9F%9F%E8%A2%AB%E5%B1%80%E9%83%A8%E5%8F%98%E9%87%8F%E8%A6%86%E7%9B%96%E5%AF%BC%E8%87%B4%E7%9A%84%E7%81%AF%E4%B8%8B%E9%BB%91%E4%BA%8B%E4%BB%B6/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -717,54 +741,18 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;Previous</div>
+                <i class="far fa-dot-circle"></i>&nbsp;Current
+            </div>
             <div class="card">
-                <a href="/2023/09/24/%E8%AE%B0%E5%BD%95%E4%BB%8A%E5%A4%A9%E4%BD%BF%E7%94%A8hexo%E8%BF%9B%E8%A1%8C%E5%8D%9A%E5%AE%A2%E7%BC%96%E5%86%99%E9%81%87%E5%88%B0%E7%9A%84%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98/">
+                <a href="/2023/10/10/%E5%9C%A8JAVA%E4%B8%AD%E5%B0%86%E5%85%A8%E5%B1%80%E5%8F%98%E9%87%8F%E7%9A%84%E4%BD%9C%E7%94%A8%E5%9F%9F%E8%A2%AB%E5%B1%80%E9%83%A8%E5%8F%98%E9%87%8F%E8%A6%86%E7%9B%96%E5%AF%BC%E8%87%B4%E7%9A%84%E7%81%AF%E4%B8%8B%E9%BB%91%E4%BA%8B%E4%BB%B6/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/19.jpg" class="responsive-img" alt="记录今天使用hexo进行博客编写遇到的一些问题">
+                        <img src="/medias/featureimages/3.jpg" class="responsive-img" alt="在JAVA中将全局变量的作用域被局部变量覆盖导致的灯下黑事件">
                         
-                        <span class="card-title">记录今天使用hexo进行博客编写遇到的一些问题</span>
-                    </div>
-                </a>
-                <div class="card-content article-content">
-                    <div class="summary block-with-text">
-                        
-                            
-                        
-                    </div>
-                    <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2023-09-24
-                        </span>
-                        <span class="publish-author">
-                            
-                            <i class="fas fa-user fa-fw"></i>
-                            John Doe
-                            
-                        </span>
-                    </div>
-                </div>
-                
-            </div>
-        </div>
-        
-        
-        <div class="article col s12 m6" data-aos="fade-up">
-            <div class="article-badge right-badge text-color">
-                Next&nbsp;<i class="fas fa-chevron-right"></i>
-            </div>
-            <div class="card">
-                <a href="/2023/09/23/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87%E5%8D%9A%E5%AE%A2%E6%96%87%E7%AB%A0/">
-                    <div class="card-image">
-                        
-                        
-                        <img src="/medias/featureimages/17.jpg" class="responsive-img" alt="我的第一篇博客文章">
-                        
-                        <span class="card-title">我的第一篇博客文章</span>
+                        <span class="card-title">在JAVA中将全局变量的作用域被局部变量覆盖导致的灯下黑事件</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -775,7 +763,45 @@
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2023-09-23
+                                <i class="far fa-clock fa-fw icon-date"></i>2023-10-10
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            John Doe
+                            
+                        </span>
+                    </div>
+                </div>
+
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                Next&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2023/09/27/%E5%85%B3%E4%BA%8E%E5%BD%92%E5%B9%B6%E7%AE%97%E6%B3%95%E7%9A%84%E5%8F%8C%E6%8C%87%E9%92%88%E5%AE%9E%E7%8E%B0/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/8.jpg" class="responsive-img" alt="关于归并算法的双指针实现">
+                        
+                        <span class="card-title">关于归并算法的双指针实现</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2023-09-27
                             </span>
                         <span class="publish-author">
                             
